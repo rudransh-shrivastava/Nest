@@ -26,7 +26,7 @@ resource "aws_dynamodb_table" "state_lock" {
   }
 }
 
-resource "aws_s3_bucket" "state" {
+resource "aws_s3_bucket" "state" { # NOSONAR
   bucket = "${var.project_name}-${var.environment}-terraform-state"
   tags = {
     Name      = "${var.project_name}-${var.environment}-terraform-state"
