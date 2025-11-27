@@ -55,6 +55,17 @@ resource "aws_elasticache_replication_group" "main" {
   description                = "${var.project_name} ${var.environment} Redis cache"
   engine                     = "redis"
   engine_version             = var.redis_engine_version
+  maintenance_window         = var.maintenance_window
+  node_type                  = var.redis_node_type
+  num_cache_clusters         = var.redis_num_cache_nodes
+  parameter_group_name       = local.parameter_group_name
+  port                       = var.redis_port
+  replication_group_id       = "${var.project_name}-${var.environment}-cache"
+  security_group_ids         = var.security_group_ids
+  snapshot_retention_limit   = var.snapshot_retention_limit
+  snapshot_window            = var.snapshot_window
+  subnet_group_name          = aws_elasticache_subnet_group.main.name
+  transit_encryption_enabled = true
   log_delivery_configuration {
     destination      = aws_cloudwatch_log_group.engine_log.name
     destination_type = "cloudwatch-logs"
@@ -67,18 +78,7 @@ resource "aws_elasticache_replication_group" "main" {
     log_format       = "json"
     log_type         = "slow-log"
   }
-  maintenance_window       = var.maintenance_window
-  node_type                = var.redis_node_type
-  num_cache_clusters       = var.redis_num_cache_nodes
-  parameter_group_name     = local.parameter_group_name
-  port                     = var.redis_port
-  replication_group_id     = "${var.project_name}-${var.environment}-cache"
-  security_group_ids       = var.security_group_ids
-  snapshot_retention_limit = var.snapshot_retention_limit
-  snapshot_window          = var.snapshot_window
-  subnet_group_name        = aws_elasticache_subnet_group.main.name
   tags = merge(var.common_tags, {
     Name = "${var.project_name}-${var.environment}-redis"
   })
-  transit_encryption_enabled = true
 }
