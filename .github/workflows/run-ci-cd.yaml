@@ -1389,6 +1389,7 @@ jobs:
           frontend_image_tag="$RELEASE_VERSION"
           project_name="$PROJECT_NAME"
           tasks_use_fargate_spot=$TASKS_USE_FARGATE_SPOT
+          db_backup_retention_period=0
           EOF
 
       - name: Terraform Init
