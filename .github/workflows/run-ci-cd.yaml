@@ -1524,6 +1524,15 @@ jobs:
             --service "$SERVICE_NAME" \
             --force-new-deployment
 
+      - name: Wait for frontend service stability
+        env:
+          CLUSTER_NAME: ${{ steps.tf-outputs.outputs.frontend_cluster_name }}
+          SERVICE_NAME: ${{ steps.tf-outputs.outputs.frontend_service_name }}
+        run: |
+          aws ecs wait services-stable \
+            --cluster "$CLUSTER_NAME" \
+            --services "$SERVICE_NAME"
+
       - name: Wait for backend service stability
         env:
           CLUSTER_NAME: ${{ steps.tf-outputs.outputs.backend_cluster_name }}
@@ -1533,14 +1542,6 @@ jobs:
             --cluster "$CLUSTER_NAME" \
             --services "$SERVICE_NAME"
 
-      - name: Wait for frontend service stability
-        env:
-          CLUSTER_NAME: ${{ steps.tf-outputs.outputs.frontend_cluster_name }}
-          SERVICE_NAME: ${{ steps.tf-outputs.outputs.frontend_service_name }}
-        run: |
-          aws ecs wait services-stable \
-            --cluster "$CLUSTER_NAME" \
-            --services "$SERVICE_NAME"
 
   run-production-lighthouse-ci:
     name: Run production Lighthouse CI
