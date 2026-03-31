@@ -1348,11 +1348,9 @@ jobs:
       TF_INPUT: false
     environment: production
     if: |
-      github.repository == 'OWASP/Nest' &&
       github.event_name == 'release' &&
       github.event.action == 'published'
     needs:
-      - bootstrap-nest-production-infrastructure
       - set-release-version
     permissions:
       contents: read
