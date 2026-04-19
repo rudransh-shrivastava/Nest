@@ -126,3 +126,9 @@ repos:
     rev: 6e10264313f53d6247a8b1b984f5b5ccf50ba539  # v2.21.0
     hooks:
       - id: pyproject-fmt
+
+  - repo: https://github.com/terraform-docs/terraform-docs
+    rev: 35a1c7623fd271219b638e4288283b80016f3623
+    hooks:
+      - id: terraform-docs-go
+        args: [-c, infrastructure/.terraform-docs.yml, infrastructure/, --output-file, README.md]
