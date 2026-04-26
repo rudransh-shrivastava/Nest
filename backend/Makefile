@@ -5,11 +5,9 @@ include backend/apps/nest/Makefile
 include backend/apps/owasp/Makefile
 include backend/apps/slack/Makefile
 
+.PHONY: fetch-nest-dump sbom-backend-image upload-nest-dump
+
 ##@ Backend
-
-SHELL := /bin/sh
-
-.PHONY: sbom-backend-image fetch-nest-dump upload-nest-dump
 
 build-backend-local-image:
 	@DOCKER_BUILDKIT=1 docker build \
