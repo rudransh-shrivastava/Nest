@@ -1,9 +1,15 @@
+ARG OWASP_GID=1000
+ARG OWASP_UID=1000
+
 FROM python:3.13.11-alpine3.23 AS builder
+
+ARG OWASP_GID
+ARG OWASP_UID
 
 ENV APK_CACHE_DIR="/home/owasp/.cache/apk-backend-test" \
     APK_SYMLINK_DIR="/etc/apk/cache" \
-    OWASP_GID=1000 \
-    OWASP_UID=1000 \
+    OWASP_GID=${OWASP_GID} \
+    OWASP_UID=${OWASP_UID} \
     PIP_CACHE_DIR="/home/owasp/.cache/pip" \
     POETRY_CACHE_DIR="/home/owasp/.cache/pypoetry" \
     PYTHONUNBUFFERED=1
@@ -42,8 +48,11 @@ COPY tests/unit tests/unit
 
 FROM python:3.13.11-alpine3.23
 
-RUN addgroup -S owasp && \
-    adduser -S -h /home/owasp -G owasp owasp && \
+ARG OWASP_GID
+ARG OWASP_UID
+
+RUN addgroup -S -g ${OWASP_GID} owasp && \
+    adduser -S -h /home/owasp -u ${OWASP_UID} -G owasp owasp && \
     mkdir -p /home/owasp && \
     chown owasp:owasp /home/owasp
 

@@ -1,11 +1,17 @@
+ARG OWASP_GID=1000
+ARG OWASP_UID=1000
+
 FROM nest-backend:base
+
+ARG OWASP_GID
+ARG OWASP_UID
 
 USER root
 
 ENV APK_CACHE_DIR="/home/owasp/.cache/apk-backend-video" \
     APK_SYMLINK_DIR="/etc/apk/cache" \
-    OWASP_GID=1000 \
-    OWASP_UID=1000 \
+    OWASP_GID=${OWASP_GID} \
+    OWASP_UID=${OWASP_UID} \
     PIP_CACHE_DIR="/home/owasp/.cache/pip" \
     POETRY_CACHE_DIR="/home/owasp/.cache/pypoetry" \
     PYTHONUNBUFFERED=1

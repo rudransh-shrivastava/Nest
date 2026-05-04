@@ -1,11 +1,17 @@
+ARG OWASP_GID=1000
+ARG OWASP_UID=1000
+
 FROM python:3.13.11-alpine3.23 AS builder
+
+ARG OWASP_GID
+ARG OWASP_UID
 
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 
 ENV APK_CACHE_DIR="/home/owasp/.cache/apk-docs" \
     APK_SYMLINK_DIR="/etc/apk/cache" \
-    OWASP_GID=1000 \
-    OWASP_UID=1000 \
+    OWASP_GID=${OWASP_GID} \
+    OWASP_UID=${OWASP_UID} \
     PIP_CACHE_DIR="/home/owasp/.cache/pip" \
     POETRY_CACHE_DIR="/home/owasp/.cache/pypoetry" \
     PYTHONUNBUFFERED=1
@@ -34,10 +40,13 @@ RUN --mount=type=cache,target=${POETRY_CACHE_DIR},uid=${OWASP_UID},gid=${OWASP_G
 
 FROM python:3.13.11-alpine3.23
 
+ARG OWASP_GID
+ARG OWASP_UID
+
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 
-RUN addgroup -S owasp && \
-    adduser -S -h /home/owasp -G owasp owasp && \
+RUN addgroup -S -g ${OWASP_GID} owasp && \
+    adduser -S -h /home/owasp -u ${OWASP_UID} -G owasp owasp && \
     mkdir -p /home/owasp && \
     chown owasp:owasp /home/owasp
 
