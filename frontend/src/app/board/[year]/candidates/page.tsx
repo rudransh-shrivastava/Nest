@@ -7,7 +7,8 @@ import millify from 'millify'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useSession } from 'next-auth/react'
+import { useEffect, useState, useMemo } from 'react'
 import { FaCode, FaExclamationCircle } from 'react-icons/fa'
 import { FaLinkedin, FaCodeBranch, FaCodeMerge } from 'react-icons/fa6'
 
@@ -88,9 +89,12 @@ type CandidateWithSnapshot = Candidate & {
 interface CandidateCardProps {
   candidate: CandidateWithSnapshot
   year: string
+  onOpenSnapshot: (login: string) => void
 }
 
-const CandidateCard = ({ candidate, year }: CandidateCardProps) => {
+const CandidateCard = ({ candidate, year, onOpenSnapshot }: CandidateCardProps) => {
+  const { data: session } = useSession() as { data: any }
+  const isCandidate = session?.user?.login && candidate.member?.login === session?.user?.login
   const client = useApolloClient()
   const [snapshot, setSnapshot] = useState<MemberSnapshot | null>(null)
   const [ledChapters, setLedChapters] = useState<Chapter[]>([])
@@ -654,6 +658,19 @@ const CandidateCard = ({ candidate, year }: CandidateCardProps) => {
               based on the flagship level project(s) they are leading.
             </div>
           )}
+        </div>
+      )}
+
+      {/* Claims Dashboard Button */}
+      {isCandidate && (
+        <div className="mt-4 w-full border-t border-gray-200 pt-4 dark:border-gray-700 flex justify-end">
+          <Link
+            href={`/board/${year}/candidates/${candidate.member?.login || candidate.id}/claims`}
+            onClick={(e) => e.stopPropagation()}
+            className="inline-flex items-center gap-1.5 rounded-md bg-blue-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-blue-700 transition-colors"
+          >
+            View / Edit Claims
+          </Link>
         </div>
       )}
     </Button>

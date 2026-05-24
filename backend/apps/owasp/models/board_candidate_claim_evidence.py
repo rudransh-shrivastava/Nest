@@ -7,6 +7,7 @@ from django.db import models
 
 from apps.common.models import TimestampedModel
 from apps.owasp.models.board_candidate_claim import BoardCandidateClaim
+from apps.owasp.utils.storage import get_evidence_storage
 
 
 class BoardCandidateClaimEvidence(TimestampedModel):
@@ -25,7 +26,13 @@ class BoardCandidateClaimEvidence(TimestampedModel):
         BoardCandidateClaim, on_delete=models.CASCADE, related_name="evidences"
     )
     description = models.TextField(default="", verbose_name="Description")
-    file = models.FileField(blank=True, null=True, upload_to="%Y/", verbose_name="File")
+    file = models.FileField(
+        blank=True,
+        null=True,
+        upload_to="%Y/",
+        storage=get_evidence_storage,
+        verbose_name="File",
+    )
     file_name = models.CharField(
         blank=True,
         max_length=1000,

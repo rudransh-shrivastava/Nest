@@ -143,6 +143,7 @@ class Base(Configuration):
     REDIS_HOST = values.SecretValue(environ_name="REDIS_HOST")
     REDIS_PASSWORD = values.SecretValue(environ_name="REDIS_PASSWORD")
     REDIS_AUTH_ENABLED = values.BooleanValue(environ_name="REDIS_AUTH_ENABLED", default=True)
+    EVIDENCE_S3_BUCKET = values.Value(environ_name="EVIDENCE_S3_BUCKET", default=None)
     REDIS_USE_TLS = values.BooleanValue(environ_name="REDIS_USE_TLS", default=False)
     REDIS_CACHE_OPTIONS: dict = {
         "CLIENT_CLASS": "django_redis.client.DefaultClient",
