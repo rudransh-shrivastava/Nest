@@ -7,7 +7,10 @@ from django.db import models
 
 from apps.common.models import TimestampedModel
 from apps.owasp.models.board_candidate_claim import BoardCandidateClaim
+<<<<<<< HEAD
 from apps.owasp.utils.storage import get_evidence_storage
+=======
+>>>>>>> 77a9889f (add candidate claim and evidence models)
 
 
 class BoardCandidateClaimEvidence(TimestampedModel):
@@ -26,6 +29,7 @@ class BoardCandidateClaimEvidence(TimestampedModel):
         BoardCandidateClaim, on_delete=models.CASCADE, related_name="evidences"
     )
     description = models.TextField(default="", verbose_name="Description")
+<<<<<<< HEAD
     file = models.FileField(
         blank=True,
         null=True,
@@ -33,6 +37,9 @@ class BoardCandidateClaimEvidence(TimestampedModel):
         storage=get_evidence_storage,
         verbose_name="File",
     )
+=======
+    file = models.FileField(blank=True, null=True, upload_to="%Y/", verbose_name="File")
+>>>>>>> 77a9889f (add candidate claim and evidence models)
     file_name = models.CharField(
         blank=True,
         max_length=1000,
@@ -66,6 +73,12 @@ class BoardCandidateClaimEvidence(TimestampedModel):
         if not (self.file or self.source_url):
             err = "Either file or source_url is required."
             raise ValidationError(err)
+
+        if self.file:
+            if not self.file_name:
+                self.file_name = self.file.name
+            if not self.file_size:
+                self.file_size = self.file.size
 
     def save(self, *args, **kwargs) -> None:
         """Save evidence."""
