@@ -11,8 +11,10 @@ import { GetBoardCandidateClaimsDocument } from 'types/__generated__/claimQuerie
 import { useEffect } from 'react'
 import { handleAppError } from 'app/global-error'
 import SecondaryCard from 'components/SecondaryCard'
+import { useRouter } from 'next/navigation'
 
 const CandidateClaimsPage = () => {
+  const router = useRouter()
   const { isSyncing, session } = useDjangoSession()
   const { login, year } = useParams<{ login: string, year: string }>()
 
@@ -43,20 +45,15 @@ const CandidateClaimsPage = () => {
     )
   }
 
+  const handleCreate = () => router.push(`/board/${year}/candidates/${login}/claims/create`)
+
   const claims = graphQLData?.boardCandidateClaims ?? []
-
-  const draftClaims = claims.filter((c) => c.status === 'DRAFT')
-  const submittedClaims = claims.filter((c) => c.status === 'SUBMITTED')
-  const approvedClaims = claims.filter((c) => c.status === 'APPROVED')
-  const rejectedClaims = claims.filter((c) => c.status === 'REJECTED')
-  const withdrawnClaims = claims.filter((c) => c.status === 'WITHDRAWN')
-
   const sectionConfig = [
-    { title: "Draft Claims", items: draftClaims },
-    { title: "Submitted Claims", items: submittedClaims },
-    { title: "Approved Claims", items: approvedClaims },
-    { title: "Rejected Claims", items: rejectedClaims },
-    { title: "Withdrawn Claims", items: withdrawnClaims },
+    { title: "Draft Claims", items: claims.filter((c) => c.status === 'DRAFT') },
+    { title: "Submitted Claims", items: claims.filter((c) => c.status === 'SUBMITTED') },
+    { title: "Approved Claims", items: claims.filter((c) => c.status === 'APPROVED') },
+    { title: "Rejected Claims", items: claims.filter((c) => c.status === 'REJECTED') },
+    { title: "Withdrawn Claims", items: claims.filter((c) => c.status === 'WITHDRAWN') },
   ]
 
   return (
@@ -66,13 +63,13 @@ const CandidateClaimsPage = () => {
           <h1 className="text-3xl font-bold text-gray-600 dark:text-white">Claims</h1>
           <p className="text-gray-600 dark:text-gray-400">Claims you've created</p>
         </div>
-        <ActionButton>
+        <ActionButton onClick={handleCreate}>
           <FaPlus className="mr-2" />
           {'Create Claim'}
         </ActionButton>
       </div>
       {sectionConfig.map(({ title, items }) => (
-        <SecondaryCard title={title}>
+        <SecondaryCard key={title} title={title}>
           {items.length == 0 ? (
             <p> No {title.toLowerCase()}. </p>
           ) : (
