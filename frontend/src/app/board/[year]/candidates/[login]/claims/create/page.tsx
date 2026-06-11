@@ -1,22 +1,22 @@
 'use client'
 import { useMutation } from '@apollo/client/react'
 import { addToast } from '@heroui/toast'
+import { useDjangoSession } from 'hooks/useDjangoSession'
 import { useParams, useRouter } from 'next/navigation'
 import React, { useState } from 'react'
 
-import { extractGraphQLErrors } from 'utils/helpers/handleGraphQLError'
-import LoadingSpinner from 'components/LoadingSpinner'
 import { CreateBoardCandidateClaimDocument } from 'types/__generated__/claimMutations.generated'
-import AccessDeniedDisplay from 'components/AccessDeniedDisplay'
 import { GetBoardCandidateClaimsDocument } from 'types/__generated__/claimQueries.generated'
-import { useDjangoSession } from 'hooks/useDjangoSession'
+import { extractGraphQLErrors } from 'utils/helpers/handleGraphQLError'
+import AccessDeniedDisplay from 'components/AccessDeniedDisplay'
 import ClaimForm from 'components/ClaimForm'
+import LoadingSpinner from 'components/LoadingSpinner'
 
 const CreateClaimPage = () => {
   const router = useRouter()
   const isCandidate = true // TODO: fetch this from backend instead -> a graphql query
   const { isSyncing, session } = useDjangoSession()
-  const { login, year } = useParams<{ login: string, year: string }>()
+  const { login, year } = useParams<{ login: string; year: string }>()
 
   const [createClaim, { loading }] = useMutation(CreateBoardCandidateClaimDocument)
 
@@ -29,7 +29,7 @@ const CreateClaimPage = () => {
     return (
       <AccessDeniedDisplay
         title="Access Denied"
-        message="You must be a candiadte to create a claim."
+        message="You must be a candidate to create a claim."
       />
     )
   }
@@ -46,10 +46,12 @@ const CreateClaimPage = () => {
 
       await createClaim({
         awaitRefetchQueries: true,
-        refetchQueries: [{
-          query: GetBoardCandidateClaimsDocument,
-          variables: { login, year: Number.parseInt(year) }
-        }],
+        refetchQueries: [
+          {
+            query: GetBoardCandidateClaimsDocument,
+            variables: { login, year: Number.parseInt(year) },
+          },
+        ],
         variables: { input },
       })
 
@@ -92,7 +94,6 @@ const CreateClaimPage = () => {
       onSubmit={handleSubmit}
       loading={loading}
       title="Create Claim"
-      isEdit={false}
     />
   )
 }

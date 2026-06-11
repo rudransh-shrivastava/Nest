@@ -3,6 +3,7 @@ import { useQuery, useApolloClient } from '@apollo/client/react'
 import { Button } from '@heroui/button'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
+import { useDjangoSession } from 'hooks/useDjangoSession'
 import millify from 'millify'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -21,7 +22,6 @@ import {
 import { formatDate } from 'utils/dateFormatter'
 import ContributionHeatmap from 'components/ContributionHeatmap'
 import LoadingSpinner from 'components/LoadingSpinner'
-import { useDjangoSession } from 'hooks/useDjangoSession'
 
 dayjs.extend(relativeTime)
 

@@ -1,21 +1,21 @@
 'use client'
 import { useMutation, useQuery } from '@apollo/client/react'
 import { addToast } from '@heroui/toast'
+import { useDjangoSession } from 'hooks/useDjangoSession'
 import { useParams, useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
-import slugify from 'utils/slugify'
-import { extractGraphQLErrors } from 'utils/helpers/handleGraphQLError'
-import LoadingSpinner from 'components/LoadingSpinner'
-import { UpdateBoardCandidateClaimDocument } from 'types/__generated__/claimMutations.generated'
-import AccessDeniedDisplay from 'components/AccessDeniedDisplay'
-import { GetBoardCandidateClaimDocument, GetBoardCandidateClaimsDocument } from 'types/__generated__/claimQueries.generated'
-import { useDjangoSession } from 'hooks/useDjangoSession'
-import ClaimForm from 'components/ClaimForm'
 import { ErrorDisplay, handleAppError } from 'app/global-error'
+import { UpdateBoardCandidateClaimDocument } from 'types/__generated__/claimMutations.generated'
+import { GetBoardCandidateClaimDocument } from 'types/__generated__/claimQueries.generated'
+import { extractGraphQLErrors } from 'utils/helpers/handleGraphQLError'
+import slugify from 'utils/slugify'
+import AccessDeniedDisplay from 'components/AccessDeniedDisplay'
+import ClaimForm from 'components/ClaimForm'
+import LoadingSpinner from 'components/LoadingSpinner'
 
 const EditClaimPage = () => {
   const router = useRouter()
-  const { claimKey, login, year } = useParams<{ claimKey: string, login: string, year: string }>()
+  const { claimKey, login, year } = useParams<{ claimKey: string; login: string; year: string }>()
   const { isSyncing, session } = useDjangoSession()
   const {
     data: graphQLData,
@@ -33,7 +33,6 @@ const EditClaimPage = () => {
     key: '',
     name: '',
   })
-
 
   useEffect(() => {
     if (graphQLRequestError) {
@@ -77,10 +76,7 @@ const EditClaimPage = () => {
 
   if (session?.user?.login !== login) {
     return (
-      <AccessDeniedDisplay
-        title="Access Denied"
-        message="You can only view your own claims."
-      />
+      <AccessDeniedDisplay title="Access Denied" message="You can only view your own claims." />
     )
   }
 
@@ -96,10 +92,12 @@ const EditClaimPage = () => {
 
       await updateClaim({
         awaitRefetchQueries: true,
-        refetchQueries: [{
-          query: GetBoardCandidateClaimDocument,
-          variables: { key: claimKey, login }
-        }],
+        refetchQueries: [
+          {
+            query: GetBoardCandidateClaimDocument,
+            variables: { key: claimKey, login },
+          },
+        ],
         variables: { input },
       })
 
@@ -142,7 +140,6 @@ const EditClaimPage = () => {
       onSubmit={handleSubmit}
       loading={loading}
       title="Edit Claim"
-      isEdit={true}
     />
   )
 }
