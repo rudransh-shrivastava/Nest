@@ -7,11 +7,8 @@ import { FormButtons } from 'components/forms/shared/FormButtons'
 import { FormContainer } from 'components/forms/shared/FormContainer'
 import { FormTextarea } from 'components/forms/shared/FormTextarea'
 import { FormTextInput } from 'components/forms/shared/FormTextInput'
-import {
-  validateDescription,
-  validateName,
-} from 'components/forms/shared/formValidationUtils'
-import { useFormValidation } from './forms/shared/useFormValidation'
+import { validateDescription, validateName } from 'components/forms/shared/formValidationUtils'
+import { useFormValidation } from 'components/forms/shared/useFormValidation'
 
 interface ClaimFormProps {
   formData: {
@@ -28,7 +25,6 @@ interface ClaimFormProps {
   loading: boolean
   title: string
   submitText?: string
-  isEdit?: boolean
 }
 
 const ClaimForm = ({
@@ -37,7 +33,6 @@ const ClaimForm = ({
   onSubmit,
   loading,
   title,
-  isEdit,
   submitText = 'Create Claim',
 }: ClaimFormProps) => {
   const [touched, setTouched] = useState<Record<string, boolean>>({})
@@ -99,11 +94,7 @@ const ClaimForm = ({
   }
 
   return (
-    <FormContainer
-      title={title}
-      onSubmit={handleSubmit}
-      containerClassName="claim-form-container"
-    >
+    <FormContainer title={title} onSubmit={handleSubmit} containerClassName="claim-form-container">
       {/* Basic Information */}
       <section className="flex flex-col gap-6">
         <div className="grid grid-cols-1 gap-6 text-gray-600 lg:grid-cols-2 dark:text-gray-300">

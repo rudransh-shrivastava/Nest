@@ -1,22 +1,22 @@
 'use client'
 
-import { useParams } from 'next/navigation'
-import { useDjangoSession } from 'hooks/useDjangoSession'
-import AccessDeniedDisplay from 'components/AccessDeniedDisplay'
-import LoadingSpinner from 'components/LoadingSpinner'
-import ActionButton from 'components/ActionButton'
-import { FaPlus } from 'react-icons/fa6'
 import { useQuery } from '@apollo/client/react'
-import { GetBoardCandidateClaimsDocument } from 'types/__generated__/claimQueries.generated'
+import { Button } from '@heroui/button'
+import { useDjangoSession } from 'hooks/useDjangoSession'
+import { useParams, useRouter } from 'next/navigation'
 import { useEffect } from 'react'
+import { FaPlus } from 'react-icons/fa6'
 import { handleAppError } from 'app/global-error'
+import { GetBoardCandidateClaimsDocument } from 'types/__generated__/claimQueries.generated'
+import AccessDeniedDisplay from 'components/AccessDeniedDisplay'
+import ActionButton from 'components/ActionButton'
+import LoadingSpinner from 'components/LoadingSpinner'
 import SecondaryCard from 'components/SecondaryCard'
-import { useRouter } from 'next/navigation'
 
 const CandidateClaimsPage = () => {
   const router = useRouter()
   const { isSyncing, session } = useDjangoSession()
-  const { login, year } = useParams<{ login: string, year: string }>()
+  const { login, year } = useParams<{ login: string; year: string }>()
 
   const {
     data: graphQLData,
@@ -39,23 +39,21 @@ const CandidateClaimsPage = () => {
 
   if (session?.user?.login !== login) {
     return (
-      <AccessDeniedDisplay
-        title="Access Denied"
-        message="You can only view your own claims."
-      />
+      <AccessDeniedDisplay title="Access Denied" message="You can only view your own claims." />
     )
   }
 
   const handleCreate = () => router.push(`/board/${year}/candidates/${login}/claims/create`)
-  const handleClaimClick = (key: string) => router.push(`/board/${year}/candidates/${login}/claims/${key}`)
+  const handleClaimClick = (key: string) =>
+    router.push(`/board/${year}/candidates/${login}/claims/${key}`)
 
   const claims = graphQLData?.boardCandidateClaims ?? []
   const sectionConfig = [
-    { title: "Draft Claims", items: claims.filter((c) => c.status === 'DRAFT') },
-    { title: "Submitted Claims", items: claims.filter((c) => c.status === 'SUBMITTED') },
-    { title: "Approved Claims", items: claims.filter((c) => c.status === 'APPROVED') },
-    { title: "Rejected Claims", items: claims.filter((c) => c.status === 'REJECTED') },
-    { title: "Withdrawn Claims", items: claims.filter((c) => c.status === 'WITHDRAWN') },
+    { title: 'Draft Claims', items: claims.filter((c) => c.status === 'DRAFT') },
+    { title: 'Submitted Claims', items: claims.filter((c) => c.status === 'SUBMITTED') },
+    { title: 'Approved Claims', items: claims.filter((c) => c.status === 'APPROVED') },
+    { title: 'Rejected Claims', items: claims.filter((c) => c.status === 'REJECTED') },
+    { title: 'Withdrawn Claims', items: claims.filter((c) => c.status === 'WITHDRAWN') },
   ]
 
   return (
@@ -77,17 +75,24 @@ const CandidateClaimsPage = () => {
           ) : (
             <div className="grid gap-4">
               {items.map((claim) => (
-                <div key={claim.key} className="rounded-lg bg-gray-200 p-4 dark:bg-gray-700" onClick={() => handleClaimClick(claim.key)}>
-                  <h3 className="mb-2 text-lg font-semibold text-blue-400">{claim.name}</h3>
-                  <p className="text-gray-600 dark:text-gray-300">{claim.description}</p>
-                </div>
-              ))
-              }
-            </div >
+                <Button
+                  key={claim.key}
+                  onPress={() => handleClaimClick(claim.key)}
+                  className="h-24 flex-col items-start justify-start rounded-lg bg-gray-200 p-4 dark:bg-gray-700"
+                >
+                  <h3 className="w-full min-w-0 truncate text-left text-lg font-semibold text-blue-400">
+                    {claim.name}
+                  </h3>
+                  <p className="w-full min-w-0 truncate text-left text-gray-600 dark:text-gray-300">
+                    {claim.description}
+                  </p>
+                </Button>
+              ))}
+            </div>
           )}
         </SecondaryCard>
       ))}
-    </div >
+    </div>
   )
 }
 

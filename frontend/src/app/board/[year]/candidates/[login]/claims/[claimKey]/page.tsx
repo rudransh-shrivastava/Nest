@@ -1,24 +1,24 @@
 'use client'
 
 import { useQuery } from '@apollo/client/react'
+
+import { BreadcrumbStyleProvider } from 'contexts/BreadcrumbContext'
+import { useDjangoSession } from 'hooks/useDjangoSession'
 import { useParams, useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 import { ErrorDisplay, handleAppError } from 'app/global-error'
-
-import LoadingSpinner from 'components/LoadingSpinner'
 import { GetBoardCandidateClaimDocument } from 'types/__generated__/claimQueries.generated'
 import { titleCaseWord } from 'utils/capitalize'
 import { formatDate } from 'utils/dateFormatter'
-import { BreadcrumbStyleProvider } from 'contexts/BreadcrumbContext'
-import { useDjangoSession } from 'hooks/useDjangoSession'
 import AccessDeniedDisplay from 'components/AccessDeniedDisplay'
-import PageWrapper from 'components/cards/PageWrapper'
 import Metadata from 'components/cards/Metadata'
+import PageWrapper from 'components/cards/PageWrapper'
 import DropdownActions from 'components/DropdownActions'
+import LoadingSpinner from 'components/LoadingSpinner'
 
 const ClaimDetailsPage = () => {
   const router = useRouter()
-  const { claimKey, login, year } = useParams<{ claimKey: string, login: string, year: string }>()
+  const { claimKey, login, year } = useParams<{ claimKey: string; login: string; year: string }>()
   const { isSyncing, session } = useDjangoSession()
   const {
     data: graphQLData,
@@ -62,10 +62,7 @@ const ClaimDetailsPage = () => {
 
   if (session?.user?.login !== login) {
     return (
-      <AccessDeniedDisplay
-        title="Access Denied"
-        message="You can only view your own claims."
-      />
+      <AccessDeniedDisplay title="Access Denied" message="You can only view your own claims." />
     )
   }
 

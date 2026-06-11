@@ -16,16 +16,12 @@ interface DropdownActionsProps {
   options: ActionItem[]
 }
 
-const DropdownActions: React.FC<DropdownActionsProps> = ({
-  options,
-  label,
-}) => {
+const DropdownActions: React.FC<DropdownActionsProps> = ({ options, label }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const [focusIndex, setFocusIndex] = useState(-1)
   const dropdownRef = useRef<HTMLDivElement>(null)
   const triggerButtonRef = useRef<HTMLButtonElement>(null)
   const menuItemsRef = useRef<(HTMLButtonElement | null)[]>([])
-
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -95,7 +91,7 @@ const DropdownActions: React.FC<DropdownActionsProps> = ({
           type="button"
           onClick={handleToggle}
           className="cursor-pointer rounded px-4 py-2 hover:bg-gray-200 dark:hover:bg-gray-700"
-          aria-label={label ?? "Actions menu"}
+          aria-label={label ?? 'Actions menu'}
           aria-expanded={dropdownOpen}
           aria-haspopup="true"
         >
@@ -126,8 +122,9 @@ const DropdownActions: React.FC<DropdownActionsProps> = ({
                   role="menuitem"
                   tabIndex={focusIndex === index ? 0 : -1}
                   onClick={handleMenuItemClick}
-                  className={`block w-full cursor-pointer px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 ${option.className || ''
-                    }`}
+                  className={`block w-full cursor-pointer px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 ${
+                    option.className || ''
+                  }`}
                 >
                   {option.label}
                 </button>

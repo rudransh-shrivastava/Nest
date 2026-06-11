@@ -15,7 +15,7 @@ export const GET_CANDIDATE_CLAIM = gql`
 
 export const GET_CANDIDATE_CLAIMS = gql`
   query GetBoardCandidateClaims($login: String!, $year: Int!) {
-    boardCandidateClaims(login: $login, year: $year){
+    boardCandidateClaims(login: $login, year: $year) {
       id
       description
       key
