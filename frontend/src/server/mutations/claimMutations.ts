@@ -9,3 +9,13 @@ export const CREATE_CLAIM = gql`
     }
   }
 `
+
+export const UPDATE_CLAIM = gql`
+  mutation UpdateBoardCandidateClaim($input: UpdateClaimInput!) {
+    updateBoardCandidateClaim(inputData: $input) {
+      ok
+      code
+      message
+    }
+  }
+`
