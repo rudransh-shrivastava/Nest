@@ -22,7 +22,7 @@ const CreateClaimPage = () => {
 
   const [formData, setFormData] = useState({
     description: '',
-    title: '',
+    name: '',
   })
 
   if (!isCandidate || session?.user?.login !== login) {
@@ -39,8 +39,8 @@ const CreateClaimPage = () => {
 
     try {
       const input = {
-        title: formData.title,
         description: formData.description,
+        name: formData.name,
         year: Number.parseInt(year),
       }
 

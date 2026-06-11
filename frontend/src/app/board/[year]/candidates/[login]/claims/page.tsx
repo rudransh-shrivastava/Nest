@@ -23,6 +23,7 @@ const CandidateClaimsPage = () => {
     error: graphQLRequestError,
     loading: isLoading,
   } = useQuery(GetBoardCandidateClaimsDocument, {
+    skip: !login || !year,
     variables: { login: login, year: Number.parseInt(year) },
   })
 
@@ -40,12 +41,13 @@ const CandidateClaimsPage = () => {
     return (
       <AccessDeniedDisplay
         title="Access Denied"
-        message="You can only view your own candidate claims."
+        message="You can only view your own claims."
       />
     )
   }
 
   const handleCreate = () => router.push(`/board/${year}/candidates/${login}/claims/create`)
+  const handleClaimClick = (key: string) => router.push(`/board/${year}/candidates/${login}/claims/${key}`)
 
   const claims = graphQLData?.boardCandidateClaims ?? []
   const sectionConfig = [
@@ -75,8 +77,8 @@ const CandidateClaimsPage = () => {
           ) : (
             <div className="grid gap-4">
               {items.map((claim) => (
-                <div key={claim.title} className="rounded-lg bg-gray-200 p-4 dark:bg-gray-700">
-                  <h3 className="mb-2 text-lg font-semibold text-blue-400">{claim.title}</h3>
+                <div key={claim.key} className="rounded-lg bg-gray-200 p-4 dark:bg-gray-700" onClick={() => handleClaimClick(claim.key)}>
+                  <h3 className="mb-2 text-lg font-semibold text-blue-400">{claim.name}</h3>
                   <p className="text-gray-600 dark:text-gray-300">{claim.description}</p>
                 </div>
               ))

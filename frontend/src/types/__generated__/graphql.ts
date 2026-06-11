@@ -65,10 +65,11 @@ export type BoardCandidateClaimEvidenceNode = Node & {
   /** The Globally Unique ID of this object */
   id: Scalars['ID']['output'];
   isRemoved: Scalars['Boolean']['output'];
+  key: Scalars['String']['output'];
+  name: Scalars['String']['output'];
   removedAt?: Maybe<Scalars['DateTime']['output']>;
   removedReason: Scalars['String']['output'];
   sourceUrl: Scalars['String']['output'];
-  title: Scalars['String']['output'];
   updatedAt: Scalars['DateTime']['output'];
 };
 
@@ -79,9 +80,10 @@ export type BoardCandidateClaimNode = Node & {
   /** The Globally Unique ID of this object */
   id: Scalars['ID']['output'];
   isLocked: Scalars['Boolean']['output'];
+  key: Scalars['String']['output'];
+  name: Scalars['String']['output'];
   order: Scalars['Int']['output'];
   status: Scalars['String']['output'];
-  title: Scalars['String']['output'];
   updatedAt: Scalars['DateTime']['output'];
   withdrawnAt?: Maybe<Scalars['DateTime']['output']>;
   withdrawnReason: Scalars['String']['output'];
@@ -163,16 +165,16 @@ export type CreateApiKeyResult = {
 
 export type CreateClaimInput = {
   description: Scalars['String']['input'];
-  title: Scalars['String']['input'];
+  name: Scalars['String']['input'];
   year: Scalars['Int']['input'];
 };
 
 export type CreateEvidenceInput = {
-  claimId: Scalars['ID']['input'];
+  claimKey: Scalars['String']['input'];
   description?: InputMaybe<Scalars['String']['input']>;
   file?: InputMaybe<Scalars['Upload']['input']>;
+  name: Scalars['String']['input'];
   sourceUrl?: InputMaybe<Scalars['String']['input']>;
-  title: Scalars['String']['input'];
 };
 
 export type CreateModuleInput = {
@@ -201,7 +203,7 @@ export type CreateProgramInput = {
 };
 
 export type DiscardClaimInput = {
-  claimId: Scalars['ID']['input'];
+  key: Scalars['String']['input'];
 };
 
 export type EntityMemberNode = Node & {
@@ -836,6 +838,7 @@ export type Query = {
   __typename?: 'Query';
   activeApiKeyCount: Scalars['Int']['output'];
   apiKeys: Array<ApiKeyNode>;
+  boardCandidateClaim?: Maybe<BoardCandidateClaimNode>;
   boardCandidateClaimEvidences: Array<BoardCandidateClaimEvidenceNode>;
   boardCandidateClaims: Array<BoardCandidateClaimNode>;
   boardOfDirectors?: Maybe<BoardOfDirectorsNode>;
@@ -884,8 +887,15 @@ export type Query = {
 };
 
 
+export type QueryBoardCandidateClaimArgs = {
+  key: Scalars['String']['input'];
+  login: Scalars['String']['input'];
+};
+
+
 export type QueryBoardCandidateClaimEvidencesArgs = {
-  claimId: Scalars['ID']['input'];
+  claimKey: Scalars['String']['input'];
+  login: Scalars['String']['input'];
 };
 
 
@@ -1138,12 +1148,12 @@ export type ReleaseNode = Node & {
 };
 
 export type RemoveEvidenceInput = {
-  evidenceId: Scalars['ID']['input'];
+  key: Scalars['String']['input'];
   removedReason: Scalars['String']['input'];
 };
 
 export type ReorderClaimsInput = {
-  claimIds: Array<Scalars['ID']['input']>;
+  keys: Array<Scalars['String']['input']>;
 };
 
 export type ReorderClaimsResult = {
@@ -1248,21 +1258,21 @@ export type StatsNode = {
 };
 
 export type SubmitClaimInput = {
-  claimId: Scalars['ID']['input'];
+  key: Scalars['String']['input'];
 };
 
 export type UpdateClaimInput = {
-  claimId: Scalars['ID']['input'];
   description?: InputMaybe<Scalars['String']['input']>;
-  title?: InputMaybe<Scalars['String']['input']>;
+  key: Scalars['String']['input'];
+  name?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type UpdateEvidenceInput = {
   description?: InputMaybe<Scalars['String']['input']>;
-  evidenceId: Scalars['ID']['input'];
   file?: InputMaybe<Scalars['Upload']['input']>;
+  key: Scalars['String']['input'];
+  name?: InputMaybe<Scalars['String']['input']>;
   sourceUrl?: InputMaybe<Scalars['String']['input']>;
-  title?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type UpdateModuleInput = {
@@ -1330,6 +1340,6 @@ export type UserNode = {
 };
 
 export type WithdrawClaimInput = {
-  claimId: Scalars['ID']['input'];
+  key: Scalars['String']['input'];
   withdrawnReason: Scalars['String']['input'];
 };
