@@ -9,19 +9,19 @@ import { FormTextarea } from 'components/forms/shared/FormTextarea'
 import { FormTextInput } from 'components/forms/shared/FormTextInput'
 import {
   validateDescription,
-  validateTitle,
+  validateName,
 } from 'components/forms/shared/formValidationUtils'
 import { useFormValidation } from './forms/shared/useFormValidation'
 
 interface ClaimFormProps {
   formData: {
     description: string
-    title: string
+    name: string
   }
   setFormData: React.Dispatch<
     React.SetStateAction<{
       description: string
-      title: string
+      name: string
     }>
   >
   onSubmit: (e: React.FormEvent) => Promise<void>
@@ -62,9 +62,9 @@ const ClaimForm = ({
         validator: () => validateDescription(formData.description),
       },
       {
-        field: 'title',
-        shouldValidate: touched.title ?? false,
-        validator: () => validateTitle(formData.title),
+        field: 'name',
+        shouldValidate: touched.name ?? false,
+        validator: () => validateName(formData.name),
       },
     ],
     [formData, touched, backendErrors]
@@ -73,7 +73,7 @@ const ClaimForm = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    const allFields = ['description', 'title']
+    const allFields = ['description', 'name']
     const newTouched: Record<string, boolean> = {}
     allFields.forEach((field) => {
       newTouched[field] = true
@@ -81,10 +81,10 @@ const ClaimForm = ({
     setTouched(newTouched)
 
     const descriptionError = validateDescription(formData.description)
-    const titleError = validateTitle(formData.title)
+    const nameError = validateName(formData.name)
 
     // Prevent submission if any validation errors exist
-    if (descriptionError || titleError) {
+    if (descriptionError || nameError) {
       return
     }
 
@@ -108,16 +108,16 @@ const ClaimForm = ({
       <section className="flex flex-col gap-6">
         <div className="grid grid-cols-1 gap-6 text-gray-600 lg:grid-cols-2 dark:text-gray-300">
           <FormTextInput
-            id="claim-title"
-            label="Title"
-            placeholder="Enter claim title"
-            value={formData.title}
+            id="claim-name"
+            label="Name"
+            placeholder="Enter claim name"
+            value={formData.name}
             onValueChange={(value) => {
-              handleInputChange('title', value)
-              setTouched((prev) => ({ ...prev, title: true }))
+              handleInputChange('name', value)
+              setTouched((prev) => ({ ...prev, name: true }))
             }}
-            error={errors.title}
-            touched={touched.title}
+            error={errors.name}
+            touched={touched.name}
             required
             className="w-full min-w-0 lg:col-span-2"
           />

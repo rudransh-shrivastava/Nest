@@ -15,14 +15,6 @@ export const validateName = (value: string, uniquenessError?: string): string | 
   return undefined
 }
 
-export const validateTitle = (value: string, uniquenessError?: string): string | undefined => {
-  const requiredError = validateRequired(value, 'Title')
-  if (requiredError) return requiredError
-  if (value.length > 1000) return 'Title must be 1000 characters or less'
-  if (uniquenessError) return uniquenessError
-  return undefined
-}
-
 export const validateDescription = (value: string): string | undefined => {
   return validateRequired(value, 'Description')
 }
