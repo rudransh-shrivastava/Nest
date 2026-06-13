@@ -19,3 +19,33 @@ export const UPDATE_CLAIM = gql`
     }
   }
 `
+
+export const DISCARD_CLAIM = gql`
+  mutation DiscardBoardCandidateClaim($input: DiscardClaimInput!) {
+    discardBoardCandidateClaim(inputData: $input) {
+      ok
+      code
+      message
+    }
+  }
+`
+
+export const SUBMIT_CLAIM = gql`
+  mutation SubmitBoardCandidateClaim($input: SubmitClaimInput!) {
+    submitBoardCandidateClaim(inputData: $input) {
+      ok
+      code
+      message
+    }
+  }
+`
+
+export const WITHDRAW_CLAIM = gql`
+  mutation WithdrawBoardCandidateClaim($input: WithdrawClaimInput!) {
+    withdrawBoardCandidateClaim(inputData: $input) {
+      ok
+      code
+      message
+    }
+  }
+`

@@ -4,7 +4,7 @@ import { useQuery } from '@apollo/client/react'
 
 import { BreadcrumbStyleProvider } from 'contexts/BreadcrumbContext'
 import { useDjangoSession } from 'hooks/useDjangoSession'
-import { useParams, useRouter } from 'next/navigation'
+import { useParams } from 'next/navigation'
 import { useEffect } from 'react'
 import { ErrorDisplay, handleAppError } from 'app/global-error'
 import { GetBoardCandidateClaimDocument } from 'types/__generated__/claimQueries.generated'
@@ -13,11 +13,10 @@ import { formatDate } from 'utils/dateFormatter'
 import AccessDeniedDisplay from 'components/AccessDeniedDisplay'
 import Metadata from 'components/cards/Metadata'
 import PageWrapper from 'components/cards/PageWrapper'
-import DropdownActions from 'components/DropdownActions'
+import ClaimActions from 'components/ClaimActions'
 import LoadingSpinner from 'components/LoadingSpinner'
 
 const ClaimDetailsPage = () => {
-  const router = useRouter()
   const { claimKey, login, year } = useParams<{ claimKey: string; login: string; year: string }>()
   const { isSyncing, session } = useDjangoSession()
   const {
@@ -80,16 +79,7 @@ const ClaimDetailsPage = () => {
           <div>
             <h1 className="text-3xl font-bold text-gray-600 dark:text-white">Claim</h1>
           </div>
-          <DropdownActions
-            options={[
-              {
-                key: 'edit',
-                label: 'Edit Claim',
-                onAction: () =>
-                  router.push(`/board/${year}/candidates/${login}/claims/${claimKey}/edit`),
-              },
-            ]}
-          />
+          <ClaimActions claim={claim} login={login} year={year} />
         </div>
         <Metadata details={programDetails} detailsTitle="Claim Details" />
       </PageWrapper>
