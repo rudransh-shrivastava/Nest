@@ -59,16 +59,10 @@ export type BoardCandidateClaimEvidenceNode = Node & {
   __typename?: 'BoardCandidateClaimEvidenceNode';
   createdAt: Scalars['DateTime']['output'];
   description: Scalars['String']['output'];
-  fileName: Scalars['String']['output'];
-  fileSize?: Maybe<Scalars['Int']['output']>;
-  fileUrl?: Maybe<Scalars['String']['output']>;
   /** The Globally Unique ID of this object */
   id: Scalars['ID']['output'];
-  isRemoved: Scalars['Boolean']['output'];
   key: Scalars['String']['output'];
   name: Scalars['String']['output'];
-  removedAt?: Maybe<Scalars['DateTime']['output']>;
-  removedReason: Scalars['String']['output'];
   sourceUrl: Scalars['String']['output'];
   updatedAt: Scalars['DateTime']['output'];
 };
@@ -175,6 +169,7 @@ export type CreateEvidenceInput = {
   file?: InputMaybe<Scalars['Upload']['input']>;
   name: Scalars['String']['input'];
   sourceUrl?: InputMaybe<Scalars['String']['input']>;
+  year: Scalars['Int']['input'];
 };
 
 export type CreateModuleInput = {
@@ -204,6 +199,7 @@ export type CreateProgramInput = {
 
 export type DiscardClaimInput = {
   key: Scalars['String']['input'];
+  year: Scalars['Int']['input'];
 };
 
 export type EntityMemberNode = Node & {
@@ -839,6 +835,8 @@ export type Query = {
   activeApiKeyCount: Scalars['Int']['output'];
   apiKeys: Array<ApiKeyNode>;
   boardCandidateClaim?: Maybe<BoardCandidateClaimNode>;
+  boardCandidateClaimEvidence?: Maybe<BoardCandidateClaimEvidenceNode>;
+  boardCandidateClaimEvidenceFileUrl?: Maybe<Scalars['String']['output']>;
   boardCandidateClaimEvidences: Array<BoardCandidateClaimEvidenceNode>;
   boardCandidateClaims: Array<BoardCandidateClaimNode>;
   boardOfDirectors?: Maybe<BoardOfDirectorsNode>;
@@ -890,12 +888,30 @@ export type Query = {
 export type QueryBoardCandidateClaimArgs = {
   key: Scalars['String']['input'];
   login: Scalars['String']['input'];
+  year: Scalars['Int']['input'];
+};
+
+
+export type QueryBoardCandidateClaimEvidenceArgs = {
+  claimKey: Scalars['String']['input'];
+  key: Scalars['String']['input'];
+  login: Scalars['String']['input'];
+  year: Scalars['Int']['input'];
+};
+
+
+export type QueryBoardCandidateClaimEvidenceFileUrlArgs = {
+  claimKey: Scalars['String']['input'];
+  key: Scalars['String']['input'];
+  login: Scalars['String']['input'];
+  year: Scalars['Int']['input'];
 };
 
 
 export type QueryBoardCandidateClaimEvidencesArgs = {
   claimKey: Scalars['String']['input'];
   login: Scalars['String']['input'];
+  year: Scalars['Int']['input'];
 };
 
 
@@ -1148,12 +1164,15 @@ export type ReleaseNode = Node & {
 };
 
 export type RemoveEvidenceInput = {
+  claimKey: Scalars['String']['input'];
   key: Scalars['String']['input'];
   removedReason: Scalars['String']['input'];
+  year: Scalars['Int']['input'];
 };
 
 export type ReorderClaimsInput = {
   keys: Array<Scalars['String']['input']>;
+  year: Scalars['Int']['input'];
 };
 
 export type ReorderClaimsResult = {
@@ -1259,20 +1278,24 @@ export type StatsNode = {
 
 export type SubmitClaimInput = {
   key: Scalars['String']['input'];
+  year: Scalars['Int']['input'];
 };
 
 export type UpdateClaimInput = {
   description?: InputMaybe<Scalars['String']['input']>;
   key: Scalars['String']['input'];
   name?: InputMaybe<Scalars['String']['input']>;
+  year: Scalars['Int']['input'];
 };
 
 export type UpdateEvidenceInput = {
+  claimKey: Scalars['String']['input'];
   description?: InputMaybe<Scalars['String']['input']>;
   file?: InputMaybe<Scalars['Upload']['input']>;
   key: Scalars['String']['input'];
   name?: InputMaybe<Scalars['String']['input']>;
   sourceUrl?: InputMaybe<Scalars['String']['input']>;
+  year: Scalars['Int']['input'];
 };
 
 export type UpdateModuleInput = {
@@ -1342,4 +1365,5 @@ export type UserNode = {
 export type WithdrawClaimInput = {
   key: Scalars['String']['input'];
   withdrawnReason: Scalars['String']['input'];
+  year: Scalars['Int']['input'];
 };

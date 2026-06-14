@@ -85,14 +85,17 @@ const ClaimActions: React.FC<ClaimActionsProps> = ({ claim, login, year }) => {
 
       switch (confirmAction) {
         case 'submit':
-          result = await submitClaim({ variables: { input: { key: claim.key } }, ...refetchConfig })
+          result = await submitClaim({
+            variables: { input: { key: claim.key, year: Number.parseInt(year) } },
+            ...refetchConfig,
+          })
           if (!result.data?.submitBoardCandidateClaim?.ok) {
             throw new Error(result.data?.submitBoardCandidateClaim?.message ?? 'Submit failed.')
           }
           break
         case 'discard':
           result = await discardClaim({
-            variables: { input: { key: claim.key } },
+            variables: { input: { key: claim.key, year: Number.parseInt(year) } },
             ...refetchConfig,
           })
           if (!result.data?.discardBoardCandidateClaim?.ok) {
@@ -101,7 +104,9 @@ const ClaimActions: React.FC<ClaimActionsProps> = ({ claim, login, year }) => {
           break
         case 'withdraw':
           result = await withdrawClaim({
-            variables: { input: { key: claim.key, withdrawnReason: reason ?? '' } },
+            variables: {
+              input: { key: claim.key, withdrawnReason: reason ?? '', year: Number.parseInt(year) },
+            },
             ...refetchConfig,
           })
           if (!result.data?.withdrawBoardCandidateClaim?.ok) {
