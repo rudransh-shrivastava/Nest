@@ -24,13 +24,12 @@ const EditClaimPage = () => {
   } = useQuery(GetBoardCandidateClaimDocument, {
     fetchPolicy: 'cache-and-network',
     skip: !claimKey,
-    variables: { key: claimKey, login: login },
+    variables: { key: claimKey, login: login, year: Number.parseInt(year) },
   })
 
   const [updateClaim, { loading }] = useMutation(UpdateBoardCandidateClaimDocument)
   const [formData, setFormData] = useState({
     description: '',
-    key: '',
     name: '',
   })
 
@@ -46,7 +45,6 @@ const EditClaimPage = () => {
     if (claim) {
       setFormData({
         description: claim.description ?? '',
-        key: claim.key ?? '',
         name: claim.name ?? '',
       })
     }
@@ -86,8 +84,9 @@ const EditClaimPage = () => {
     try {
       const input = {
         description: formData.description,
-        key: formData.key,
+        key: claimKey,
         name: formData.name,
+        year: Number.parseInt(year),
       }
 
       await updateClaim({
@@ -95,7 +94,7 @@ const EditClaimPage = () => {
         refetchQueries: [
           {
             query: GetBoardCandidateClaimDocument,
-            variables: { key: claimKey, login },
+            variables: { key: claimKey, login, year: Number.parseInt(year) },
           },
         ],
         variables: { input },

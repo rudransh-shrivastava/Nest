@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client'
 
 export const GET_CANDIDATE_CLAIM = gql`
-  query GetBoardCandidateClaim($login: String!, $key: String!) {
-    boardCandidateClaim(login: $login, key: $key) {
+  query GetBoardCandidateClaim($login: String!, $key: String!, $year: Int!) {
+    boardCandidateClaim(login: $login, key: $key, year: $year) {
       id
       description
       key

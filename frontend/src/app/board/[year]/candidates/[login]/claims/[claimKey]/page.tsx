@@ -4,19 +4,23 @@ import { useQuery } from '@apollo/client/react'
 
 import { BreadcrumbStyleProvider } from 'contexts/BreadcrumbContext'
 import { useDjangoSession } from 'hooks/useDjangoSession'
-import { useParams } from 'next/navigation'
+import { toLower, upperFirst } from 'lodash'
+import { useParams, useRouter } from 'next/navigation'
 import { useEffect } from 'react'
+import { FaPlus } from 'react-icons/fa6'
 import { ErrorDisplay, handleAppError } from 'app/global-error'
 import { GetBoardCandidateClaimDocument } from 'types/__generated__/claimQueries.generated'
 import { titleCaseWord } from 'utils/capitalize'
 import { formatDate } from 'utils/dateFormatter'
 import AccessDeniedDisplay from 'components/AccessDeniedDisplay'
+import ActionButton from 'components/ActionButton'
 import Metadata from 'components/cards/Metadata'
 import PageWrapper from 'components/cards/PageWrapper'
 import ClaimActions from 'components/ClaimActions'
 import LoadingSpinner from 'components/LoadingSpinner'
 
 const ClaimDetailsPage = () => {
+  const router = useRouter()
   const { claimKey, login, year } = useParams<{ claimKey: string; login: string; year: string }>()
   const { isSyncing, session } = useDjangoSession()
   const {
@@ -26,7 +30,7 @@ const ClaimDetailsPage = () => {
   } = useQuery(GetBoardCandidateClaimDocument, {
     fetchPolicy: 'cache-and-network',
     skip: !claimKey,
-    variables: { key: claimKey, login: login },
+    variables: { key: claimKey, login: login, year: Number.parseInt(year) },
   })
 
   const claim = graphQLData?.boardCandidateClaim
@@ -65,12 +69,15 @@ const ClaimDetailsPage = () => {
     )
   }
 
-  const programDetails = [
+  const claimDetails = [
     { label: 'Name', value: titleCaseWord(claim.name) },
     { label: 'Description', value: claim.description },
-    { label: 'Status', value: claim.status },
+    { label: 'Status', value: upperFirst(toLower(claim.status)) },
     { label: 'Last Updated', value: formatDate(claim.updatedAt) },
   ]
+
+  const handleAddEvidence = () =>
+    router.push(`/board/${year}/candidates/${login}/claims/${claimKey}/evidence/create`)
 
   return (
     <BreadcrumbStyleProvider className="bg-white dark:bg-[#212529]">
@@ -79,9 +86,15 @@ const ClaimDetailsPage = () => {
           <div>
             <h1 className="text-3xl font-bold text-gray-600 dark:text-white">Claim</h1>
           </div>
-          <ClaimActions claim={claim} login={login} year={year} />
+          <div className="flex items-center">
+            <ActionButton onClick={handleAddEvidence}>
+              <FaPlus className="mr-2" />
+              {'Add Evidence'}
+            </ActionButton>
+            <ClaimActions claim={claim} login={login} year={year} />
+          </div>
         </div>
-        <Metadata details={programDetails} detailsTitle="Claim Details" />
+        <Metadata details={claimDetails} detailsTitle="Claim Details" />
       </PageWrapper>
     </BreadcrumbStyleProvider>
   )
