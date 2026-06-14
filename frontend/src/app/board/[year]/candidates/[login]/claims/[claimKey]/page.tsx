@@ -18,32 +18,49 @@ import Metadata from 'components/cards/Metadata'
 import PageWrapper from 'components/cards/PageWrapper'
 import ClaimActions from 'components/ClaimActions'
 import LoadingSpinner from 'components/LoadingSpinner'
+import SecondaryCard from 'components/SecondaryCard'
+import { Button } from '@heroui/button'
+import { GetBoardCandidateClaimEvidencesDocument } from 'types/__generated__/evidenceQueries.generated'
 
 const ClaimDetailsPage = () => {
   const router = useRouter()
   const { claimKey, login, year } = useParams<{ claimKey: string; login: string; year: string }>()
   const { isSyncing, session } = useDjangoSession()
   const {
-    data: graphQLData,
-    error: graphQLRequestError,
-    loading: isLoading,
+    data: claimGraphQLData,
+    error: claimGraphQLRequestError,
+    loading: isClaimLoading,
   } = useQuery(GetBoardCandidateClaimDocument, {
     fetchPolicy: 'cache-and-network',
     skip: !claimKey,
     variables: { key: claimKey, login: login, year: Number.parseInt(year) },
   })
 
-  const claim = graphQLData?.boardCandidateClaim
+  const {
+    data: evidenceGraphQLData,
+    error: evidenceGraphQLRequestError,
+    loading: isEvidenceLoading,
+  } = useQuery(GetBoardCandidateClaimEvidencesDocument, {
+    fetchPolicy: 'cache-and-network',
+    skip: !claimKey,
+    variables: { claimKey: claimKey, login: login, year: Number.parseInt(year) },
+  })
+
+  const claim = claimGraphQLData?.boardCandidateClaim
+  const evidences = evidenceGraphQLData?.boardCandidateClaimEvidences ?? []
 
   useEffect(() => {
-    if (graphQLRequestError) {
-      handleAppError(graphQLRequestError)
+    if (claimGraphQLRequestError) {
+      handleAppError(claimGraphQLRequestError)
     }
-  }, [graphQLRequestError])
+    if (evidenceGraphQLData) {
+      handleAppError(evidenceGraphQLRequestError)
+    }
+  }, [claimGraphQLRequestError, evidenceGraphQLRequestError])
 
-  if (isLoading || isSyncing) return <LoadingSpinner />
+  if (isClaimLoading || isEvidenceLoading || isSyncing) return <LoadingSpinner />
 
-  if (graphQLRequestError) {
+  if (claimGraphQLRequestError || evidenceGraphQLRequestError) {
     return (
       <ErrorDisplay
         statusCode={500}
@@ -53,7 +70,7 @@ const ClaimDetailsPage = () => {
     )
   }
 
-  if (!graphQLData || !claim) {
+  if (!claimGraphQLData || !claim) {
     return (
       <ErrorDisplay
         statusCode={404}
@@ -79,6 +96,9 @@ const ClaimDetailsPage = () => {
   const handleAddEvidence = () =>
     router.push(`/board/${year}/candidates/${login}/claims/${claimKey}/evidence/create`)
 
+  const handleEvidenceClick = (evidenceId: string) =>
+    router.push(`/board/${year}/candidates/${login}/claims/${claimKey}/evidence/${evidenceId}`)
+
   return (
     <BreadcrumbStyleProvider className="bg-white dark:bg-[#212529]">
       <PageWrapper>
@@ -87,14 +107,38 @@ const ClaimDetailsPage = () => {
             <h1 className="text-3xl font-bold text-gray-600 dark:text-white">Claim</h1>
           </div>
           <div className="flex items-center">
-            <ActionButton onClick={handleAddEvidence}>
-              <FaPlus className="mr-2" />
-              {'Add Evidence'}
-            </ActionButton>
+            {claim.status == "DRAFT" && (
+              <ActionButton onClick={handleAddEvidence}>
+                <FaPlus className="mr-2" />
+                {'Add Evidence'}
+              </ActionButton>
+            )}
             <ClaimActions claim={claim} login={login} year={year} />
           </div>
         </div>
         <Metadata details={claimDetails} detailsTitle="Claim Details" />
+        <SecondaryCard title="Evidences">
+          {evidences.length == 0 ? (
+            <p> No evidences. </p>
+          ) : (
+            <div className="grid gap-4">
+              {evidences.map((evidence) => (
+                <Button
+                  key={evidence.key}
+                  onPress={() => handleEvidenceClick(evidence.key)}
+                  className="h-24 grid grid-col-2 gap-4 items-start justify-start rounded-lg bg-gray-200 p-4 dark:bg-gray-700"
+                >
+                  <h3 className="w-full min-w-0 truncate text-left text-lg font-semibold text-blue-400">
+                    {evidence.name}
+                  </h3>
+                  <p className="w-full min-w-0 truncate text-left text-gray-600 dark:text-gray-300">
+                    {evidence.description}
+                  </p>
+                </Button>
+              ))}
+            </div>
+          )}
+        </SecondaryCard>
       </PageWrapper>
     </BreadcrumbStyleProvider>
   )
