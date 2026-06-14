@@ -165,7 +165,7 @@ export type CreateClaimInput = {
 
 export type CreateEvidenceInput = {
   claimKey: Scalars['String']['input'];
-  description?: InputMaybe<Scalars['String']['input']>;
+  description: Scalars['String']['input'];
   file?: InputMaybe<Scalars['Upload']['input']>;
   name: Scalars['String']['input'];
   sourceUrl?: InputMaybe<Scalars['String']['input']>;
