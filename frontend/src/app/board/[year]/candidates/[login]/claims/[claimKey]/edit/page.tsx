@@ -89,7 +89,7 @@ const EditClaimPage = () => {
         year: Number.parseInt(year),
       }
 
-      await updateClaim({
+      const result = await updateClaim({
         awaitRefetchQueries: true,
         refetchQueries: [
           {
@@ -99,6 +99,10 @@ const EditClaimPage = () => {
         ],
         variables: { input },
       })
+
+      if (!result.data?.updateBoardCandidateClaim?.ok) {
+        throw new Error(result.data?.updateBoardCandidateClaim?.message ?? 'Claim update failed.')
+      }
 
       addToast({
         description: 'Claim updated successfully!',

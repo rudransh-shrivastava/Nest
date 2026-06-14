@@ -5,31 +5,32 @@ import { useDjangoSession } from 'hooks/useDjangoSession'
 import { useParams, useRouter } from 'next/navigation'
 import React, { useState } from 'react'
 
-import { CreateBoardCandidateClaimDocument } from 'types/__generated__/claimMutations.generated'
-import { GetBoardCandidateClaimsDocument } from 'types/__generated__/claimQueries.generated'
+import { CreateBoardCandidateClaimEvidenceDocument } from 'types/__generated__/evidenceMutations.generated'
+import { GetBoardCandidateClaimEvidencesDocument } from 'types/__generated__/evidenceQueries.generated'
 import { extractGraphQLErrors } from 'utils/helpers/handleGraphQLError'
 import AccessDeniedDisplay from 'components/AccessDeniedDisplay'
-import ClaimForm from 'components/ClaimForm'
+import EvidenceForm from 'components/EvidenceForm'
 import LoadingSpinner from 'components/LoadingSpinner'
 
-const CreateClaimPage = () => {
+const CreateEvidencePage = () => {
   const router = useRouter()
-  const isCandidate = true // TODO: fetch this from backend instead -> a graphql query
   const { isSyncing, session } = useDjangoSession()
-  const { login, year } = useParams<{ login: string; year: string }>()
+  const { claimKey, login, year } = useParams<{ claimKey: string; login: string; year: string }>()
 
-  const [createClaim, { loading }] = useMutation(CreateBoardCandidateClaimDocument)
+  const [createEvidence, { loading }] = useMutation(CreateBoardCandidateClaimEvidenceDocument)
 
   const [formData, setFormData] = useState({
     description: '',
     name: '',
+    file: null as File | null,
+    sourceUrl: '',
   })
 
-  if (!isCandidate || session?.user?.login !== login) {
+  if (session?.user?.login !== login) {
     return (
       <AccessDeniedDisplay
         title="Access Denied"
-        message="You must be a candidate to create a claim."
+        message="You must be a candidate to add an evidence."
       />
     )
   }
@@ -39,28 +40,33 @@ const CreateClaimPage = () => {
 
     try {
       const input = {
+        claimKey: claimKey,
         description: formData.description,
+        file: formData.file,
         name: formData.name,
+        sourceUrl: formData.sourceUrl,
         year: Number.parseInt(year),
       }
 
-      const result = await createClaim({
+      const result = await createEvidence({
         awaitRefetchQueries: true,
         refetchQueries: [
           {
-            query: GetBoardCandidateClaimsDocument,
-            variables: { login, year: Number.parseInt(year) },
+            query: GetBoardCandidateClaimEvidencesDocument,
+            variables: { claimKey, login, year: Number.parseInt(year) },
           },
         ],
         variables: { input },
       })
 
-      if (!result.data?.createBoardCandidateClaim?.ok) {
-        throw new Error(result.data?.createBoardCandidateClaim?.message ?? 'Claim creation failed.')
+      if (!result.data?.createBoardCandidateClaimEvidence?.ok) {
+        throw new Error(
+          result.data?.createBoardCandidateClaimEvidence?.message ?? 'Evidence creation failed.'
+        )
       }
 
       addToast({
-        description: 'Claim created successfully!',
+        description: 'Evidence created successfully!',
         title: 'Success',
         timeout: 3000,
         shouldShowTimeoutProgress: true,
@@ -68,7 +74,7 @@ const CreateClaimPage = () => {
         variant: 'solid',
       })
 
-      router.push(`/board/${year}/candidates/${login}/claims`)
+      router.push(`/board/${year}/candidates/${login}/claims/${claimKey}`)
     } catch (err) {
       // TODO: handle validation errors inline using setValidationErrors + extractGraphQLErrors
       const { hasValidationErrors } = extractGraphQLErrors(err)
@@ -92,14 +98,14 @@ const CreateClaimPage = () => {
   }
 
   return (
-    <ClaimForm
+    <EvidenceForm
       formData={formData}
       setFormData={setFormData}
       onSubmit={handleSubmit}
       loading={loading}
-      title="Create Claim"
+      title="Add Evidence"
     />
   )
 }
 
-export default CreateClaimPage
+export default CreateEvidencePage
