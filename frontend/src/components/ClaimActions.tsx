@@ -134,13 +134,16 @@ const ClaimActions: React.FC<ClaimActionsProps> = ({ claim, login, year }) => {
   }
 
   const options = [
-    ...(claim.status == "DRAFT" ? [
-      {
-        key: 'edit',
-        label: 'Edit Claim',
-        onAction: () => router.push(`/board/${year}/candidates/${login}/claims/${claim.key}/edit`),
-      },
-    ] : []),
+    ...(claim.status == 'DRAFT'
+      ? [
+          {
+            key: 'edit',
+            label: 'Edit Claim',
+            onAction: () =>
+              router.push(`/board/${year}/candidates/${login}/claims/${claim.key}/edit`),
+          },
+        ]
+      : []),
     ...(ACTIONS_BY_STATUS[claim.status] ?? []).map((key) => ({
       key,
       label: `${upperFirst(key)} Claim`,

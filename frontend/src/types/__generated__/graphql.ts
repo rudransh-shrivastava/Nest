@@ -59,6 +59,7 @@ export type BoardCandidateClaimEvidenceNode = Node & {
   __typename?: 'BoardCandidateClaimEvidenceNode';
   createdAt: Scalars['DateTime']['output'];
   description: Scalars['String']['output'];
+  hasFile: Scalars['Boolean']['output'];
   /** The Globally Unique ID of this object */
   id: Scalars['ID']['output'];
   key: Scalars['String']['output'];
