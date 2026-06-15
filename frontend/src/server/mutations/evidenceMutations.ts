@@ -9,3 +9,23 @@ export const CREATE_CLAIM_EVIDENCE = gql`
     }
   }
 `
+
+export const REMOVE_CLAIM_EVIDENCE = gql`
+  mutation RemoveBoardCandidateClaimEvidence($input: RemoveEvidenceInput!) {
+    removeBoardCandidateClaimEvidence(inputData: $input) {
+      ok
+      code
+      message
+    }
+  }
+`
+
+export const UPDATE_CLAIM_EVIDENCE = gql`
+  mutation UpdateBoardCandidateClaimEvidence($input: UpdateEvidenceInput!) {
+    updateBoardCandidateClaimEvidence(inputData: $input) {
+      ok
+      code
+      message
+    }
+  }
+`

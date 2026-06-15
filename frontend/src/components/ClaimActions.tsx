@@ -153,7 +153,7 @@ const ClaimActions: React.FC<ClaimActionsProps> = ({ claim, login, year }) => {
 
   return (
     <>
-      <DropdownActions options={options} />
+      {options.length > 0 && <DropdownActions options={options} />}
       <Modal
         isOpen={!!confirmAction}
         onClose={() => {
