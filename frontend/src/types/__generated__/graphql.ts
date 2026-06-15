@@ -1167,7 +1167,7 @@ export type ReleaseNode = Node & {
 export type RemoveEvidenceInput = {
   claimKey: Scalars['String']['input'];
   key: Scalars['String']['input'];
-  removedReason: Scalars['String']['input'];
+  removedReason?: InputMaybe<Scalars['String']['input']>;
   year: Scalars['Int']['input'];
 };
 
