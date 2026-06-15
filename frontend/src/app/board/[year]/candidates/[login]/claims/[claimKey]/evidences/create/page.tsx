@@ -71,22 +71,18 @@ const CreateEvidencePage = () => {
         timeout: 3000,
         shouldShowTimeoutProgress: true,
         color: 'success',
-        variant: 'solid',
       })
 
       router.push(`/board/${year}/candidates/${login}/claims/${claimKey}`)
     } catch (err) {
-      // TODO: handle validation errors inline using setValidationErrors + extractGraphQLErrors
       const { hasValidationErrors } = extractGraphQLErrors(err)
       if (!hasValidationErrors) {
         addToast({
           description:
             err instanceof Error ? err.message : 'Unable to complete the requested operation.',
-          title: 'GraphQL Request Failed',
           timeout: 3000,
           shouldShowTimeoutProgress: true,
           color: 'danger',
-          variant: 'solid',
         })
       }
       throw err
