@@ -86,6 +86,7 @@ export type BoardCandidateClaimNode = Node & {
 
 export type BoardOfDirectorsNode = Node & {
   __typename?: 'BoardOfDirectorsNode';
+  candidate?: Maybe<EntityMemberNode>;
   candidates: Array<EntityMemberNode>;
   createdAt: Scalars['DateTime']['output'];
   /** The Globally Unique ID of this object */
@@ -94,6 +95,11 @@ export type BoardOfDirectorsNode = Node & {
   owaspUrl: Scalars['String']['output'];
   updatedAt: Scalars['DateTime']['output'];
   year: Scalars['Int']['output'];
+};
+
+
+export type BoardOfDirectorsNodeCandidateArgs = {
+  login: Scalars['String']['input'];
 };
 
 export type ChapterNode = Node & {

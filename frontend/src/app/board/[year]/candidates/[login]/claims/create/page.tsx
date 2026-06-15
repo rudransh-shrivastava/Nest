@@ -1,10 +1,11 @@
 'use client'
-import { useMutation } from '@apollo/client/react'
+import { useMutation, useQuery } from '@apollo/client/react'
 import { addToast } from '@heroui/toast'
 import { useDjangoSession } from 'hooks/useDjangoSession'
 import { useParams, useRouter } from 'next/navigation'
 import React, { useState } from 'react'
 
+import { GetBoardCandidateDocument } from 'types/__generated__/boardQueries.generated'
 import { CreateBoardCandidateClaimDocument } from 'types/__generated__/claimMutations.generated'
 import { GetBoardCandidateClaimsDocument } from 'types/__generated__/claimQueries.generated'
 import { extractGraphQLErrors } from 'utils/helpers/handleGraphQLError'
@@ -14,7 +15,6 @@ import LoadingSpinner from 'components/LoadingSpinner'
 
 const CreateClaimPage = () => {
   const router = useRouter()
-  const isCandidate = true // TODO: fetch this from backend instead -> a graphql query
   const { isSyncing, session } = useDjangoSession()
   const { login, year } = useParams<{ login: string; year: string }>()
 
@@ -24,6 +24,12 @@ const CreateClaimPage = () => {
     description: '',
     name: '',
   })
+
+  const { data: candidateGraphQLData } = useQuery(GetBoardCandidateDocument, {
+    variables: { login: login, year: Number.parseInt(year) },
+  })
+
+  const isCandidate = candidateGraphQLData?.boardOfDirectors?.candidate != null
 
   if (!isCandidate || session?.user?.login !== login) {
     return (

@@ -7,6 +7,7 @@ import { useParams, useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 import { FaPlus } from 'react-icons/fa6'
 import { handleAppError } from 'app/global-error'
+import { GetBoardCandidateDocument } from 'types/__generated__/boardQueries.generated'
 import { GetBoardCandidateClaimsDocument } from 'types/__generated__/claimQueries.generated'
 import AccessDeniedDisplay from 'components/AccessDeniedDisplay'
 import ActionButton from 'components/ActionButton'
@@ -27,6 +28,12 @@ const CandidateClaimsPage = () => {
     variables: { login: login, year: Number.parseInt(year) },
   })
 
+  const { data: candidateGraphQLData } = useQuery(GetBoardCandidateDocument, {
+    variables: { login: login, year: Number.parseInt(year) },
+  })
+
+  const isCandidate = candidateGraphQLData?.boardOfDirectors?.candidate != null
+
   useEffect(() => {
     if (graphQLRequestError) {
       handleAppError(graphQLRequestError)
@@ -37,7 +44,7 @@ const CandidateClaimsPage = () => {
     return <LoadingSpinner />
   }
 
-  if (session?.user?.login !== login) {
+  if (!isCandidate || session?.user?.login !== login) {
     return (
       <AccessDeniedDisplay title="Access Denied" message="You can only view your own claims." />
     )
