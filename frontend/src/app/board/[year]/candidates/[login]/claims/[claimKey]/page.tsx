@@ -126,14 +126,17 @@ const ClaimDetailsPage = () => {
                 <Button
                   key={evidence.key}
                   onPress={() => handleEvidenceClick(evidence.key)}
-                  className="grid-col-2 grid h-24 items-start justify-start gap-4 rounded-lg bg-gray-200 p-4 dark:bg-gray-700"
+                  className="h-28 flex-col items-start justify-start bg-transparent p-4 dark:hover:bg-gray-900"
                 >
-                  <h3 className="w-full min-w-0 truncate text-left text-lg font-semibold text-blue-400">
+                  <h3 className="w-full min-w-0 truncate text-left text-xl leading-tight font-semibold dark:text-gray-300">
                     {evidence.name}
                   </h3>
-                  <p className="w-full min-w-0 truncate text-left text-gray-600 dark:text-gray-300">
+                  <p className="w-full min-w-0 truncate text-left leading-tight text-gray-600 dark:text-gray-300">
                     {evidence.description}
                   </p>
+                  <span className="shrink-0 text-xs text-gray-600 dark:text-gray-400">
+                    {formatDate(evidence.createdAt)}
+                  </span>
                 </Button>
               ))}
             </div>

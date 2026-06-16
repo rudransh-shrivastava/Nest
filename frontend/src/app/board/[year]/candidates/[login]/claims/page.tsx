@@ -9,6 +9,7 @@ import { FaPlus } from 'react-icons/fa6'
 import { handleAppError } from 'app/global-error'
 import { GetBoardCandidateDocument } from 'types/__generated__/boardQueries.generated'
 import { GetBoardCandidateClaimsDocument } from 'types/__generated__/claimQueries.generated'
+import { formatDate } from 'utils/dateFormatter'
 import AccessDeniedDisplay from 'components/AccessDeniedDisplay'
 import ActionButton from 'components/ActionButton'
 import LoadingSpinner from 'components/LoadingSpinner'
@@ -80,19 +81,22 @@ const CandidateClaimsPage = () => {
           {items.length == 0 ? (
             <p> No {title.toLowerCase()}. </p>
           ) : (
-            <div className="grid gap-4">
+            <div className="grid gap-2">
               {items.map((claim) => (
                 <Button
                   key={claim.key}
                   onPress={() => handleClaimClick(claim.key)}
-                  className="h-24 flex-col items-start justify-start rounded-lg bg-gray-200 p-4 dark:bg-gray-700"
+                  className="h-28 flex-col items-start justify-start bg-transparent p-4 dark:hover:bg-gray-900"
                 >
-                  <h3 className="w-full min-w-0 truncate text-left text-lg font-semibold text-blue-400">
+                  <h3 className="w-full min-w-0 truncate text-left text-xl leading-tight font-semibold dark:text-gray-300">
                     {claim.name}
                   </h3>
-                  <p className="w-full min-w-0 truncate text-left text-gray-600 dark:text-gray-300">
+                  <p className="w-full min-w-0 truncate text-left leading-tight text-gray-600 dark:text-gray-300">
                     {claim.description}
                   </p>
+                  <span className="shrink-0 text-xs text-gray-600 dark:text-gray-400">
+                    {formatDate(claim.createdAt)}
+                  </span>
                 </Button>
               ))}
             </div>
