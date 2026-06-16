@@ -49,3 +49,13 @@ export const WITHDRAW_CLAIM = gql`
     }
   }
 `
+
+export const REORDER_CLAIMS = gql`
+  mutation ReorderBoardCandidateClaims($input: ReorderClaimsInput!) {
+    reorderBoardCandidateClaims(inputData: $input) {
+      ok
+      code
+      message
+    }
+  }
+`
