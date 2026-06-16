@@ -6,6 +6,7 @@ import { useDjangoSession } from 'hooks/useDjangoSession'
 import { useParams, useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 import { FaPlus } from 'react-icons/fa6'
+import { FaChevronUp, FaChevronDown } from 'react-icons/fa'
 import { handleAppError } from 'app/global-error'
 import { GetBoardCandidateDocument } from 'types/__generated__/boardQueries.generated'
 import { GetBoardCandidateClaimsDocument } from 'types/__generated__/claimQueries.generated'
@@ -86,17 +87,25 @@ const CandidateClaimsPage = () => {
                 <Button
                   key={claim.key}
                   onPress={() => handleClaimClick(claim.key)}
-                  className="h-28 flex-col items-start justify-start bg-transparent p-4 dark:hover:bg-gray-900"
+                  className="h-24 flex-row justify-between bg-transparent dark:hover:bg-gray-900"
                 >
-                  <h3 className="w-full min-w-0 truncate text-left text-xl leading-tight font-semibold dark:text-gray-300">
-                    {claim.name}
-                  </h3>
-                  <p className="w-full min-w-0 truncate text-left leading-tight text-gray-600 dark:text-gray-300">
-                    {claim.description}
-                  </p>
-                  <span className="shrink-0 text-xs text-gray-600 dark:text-gray-400">
-                    {formatDate(claim.createdAt)}
-                  </span>
+                  <div className='flex flex-1 min-w-0 flex-col items-start justify-start p-1'>
+                    <h3 className="w-full min-w-0 truncate text-left text-xl leading-tight font-semibold dark:text-gray-300">
+                      {claim.name}
+                    </h3>
+                    <p className="w-full min-w-0 truncate text-left leading-tight text-gray-600 dark:text-gray-300">
+                      {claim.description}
+                    </p>
+                    <span className="mt-1 shrink-0 text-xs text-gray-600 dark:text-gray-400">
+                      {formatDate(claim.createdAt)}
+                    </span>
+                  </div>
+                  {['DRAFT', 'APPROVED'].includes(claim.status) && (
+                    <div className='flex flex-row gap-2 p-1'>
+                      <FaChevronUp className="mx-1 text-gray-400 dark:text-gray-500 hover:text-gray-500 hover:dark:text-gray-400" size={24} />
+                      <FaChevronDown className="mx-1 text-gray-400 dark:text-gray-500 hover:text-gray-500 hover:dark:text-gray-400" size={24} />
+                    </div>
+                  )}
                 </Button>
               ))}
             </div>
