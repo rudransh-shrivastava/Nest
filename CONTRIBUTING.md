@@ -76,14 +76,21 @@ Follow these steps to set up the OWASP Nest application:
 
 Ensure that all `.env` files are saved in **UTF-8 format without BOM (Byte Order Mark)**. This is crucial to prevent "Unexpected character" errors during application execution or Docker image building.
 
-**Please note you need to restart the application in order to apply any `.env` file changes.**
+**Please note you might need to restart the application in order to apply any `.env` file changes.**
 
-1. **Configure Environment Variables**:
+1. **Configure Django Secret Key**:
 
-   - Open the `backend/.env` file in your preferred text editor and change the `DJANGO_CONFIGURATION` value to `Local`:
+   - The backend requires `DJANGO_SECRET_KEY` before it can start. The example file leaves this empty — you must set it yourself.
+   - Generate a value by running:
+
+     ```bash
+     openssl rand -base64 32
+     ```
+
+   - Update your `backend/.env` file:
 
      ```plaintext
-     DJANGO_CONFIGURATION=Local
+     DJANGO_SECRET_KEY=<output-from-openssl-command>
      ```
 
 1. **Set Up Algolia**:

@@ -1,8 +1,10 @@
 """GraphQL schema."""
 
+from collections.abc import Callable
+
 import strawberry
 from django.conf import settings
-from strawberry.extensions import DisableIntrospection, QueryDepthLimiter
+from strawberry.extensions import DisableIntrospection, QueryDepthLimiter, SchemaExtension
 from strawberry_django.optimizer import DjangoOptimizerExtension
 
 from apps.api.internal.mutations import ApiMutations
@@ -18,6 +20,7 @@ from apps.mentorship.api.internal.queries import (
     ProgramQuery,
 )
 from apps.nest.api.internal.mutations import NestMutations
+from apps.owasp.api.internal.mutations import OwaspMutation
 from apps.owasp.api.internal.queries import OwaspQuery
 
 
@@ -26,6 +29,7 @@ class Mutation(
     ApiMutations,
     ModuleMutation,
     NestMutations,
+    OwaspMutation,
     ProgramMutation,
 ):
     """Schema mutations."""
@@ -43,12 +47,21 @@ class Query(
     """Schema queries."""
 
 
-extensions = [
-    QueryDepthLimiter(max_depth=5),
-    DjangoOptimizerExtension(),
+class NestQueryDepthLimiter(QueryDepthLimiter):
+    """Query depth limiter configured for the Nest schema."""
+
+    def __init__(self, **kwargs) -> None:
+        """Initialize with the Nest schema max query depth."""
+        kwargs.pop("execution_context", None)
+        super().__init__(max_depth=5, **kwargs)
+
+
+extensions: list[type[SchemaExtension] | Callable[[], SchemaExtension]] = [
+    NestQueryDepthLimiter,
+    DjangoOptimizerExtension,
 ]
 
 if not settings.DEBUG and not settings.IS_FUZZ_ENVIRONMENT:
-    extensions.append(DisableIntrospection())
+    extensions.append(DisableIntrospection)
 
 schema = strawberry.Schema(extensions=extensions, mutation=Mutation, query=Query)

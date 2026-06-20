@@ -1,10 +1,5 @@
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
-export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
-export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
-export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
-export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
-export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: { input: string; output: string; }
@@ -15,8 +10,8 @@ export type Scalars = {
   Date: { input: string | number; output: string | number; }
   DateTime: { input: string | number; output: string | number; }
   JSON: { input: Record<string, unknown>; output: Record<string, unknown>; }
-  UUID: { input: any; output: any; }
-  Upload: { input: any; output: any; }
+  UUID: { input: unknown; output: unknown; }
+  Upload: { input: unknown; output: unknown; }
 };
 
 export type AdminNode = {
@@ -78,7 +73,7 @@ export type BoardCandidateClaimNode = Node & {
   key: Scalars['String']['output'];
   name: Scalars['String']['output'];
   order: Scalars['Int']['output'];
-  status: Scalars['String']['output'];
+  status: ClaimStatusEnum;
   updatedAt: Scalars['DateTime']['output'];
   withdrawnAt?: Maybe<Scalars['DateTime']['output']>;
   withdrawnReason: Scalars['String']['output'];
@@ -134,6 +129,15 @@ export type ClaimResult = {
   message?: Maybe<Scalars['String']['output']>;
   ok: Scalars['Boolean']['output'];
 };
+
+export enum ClaimStatusEnum {
+  Approved = 'APPROVED',
+  Discarded = 'DISCARDED',
+  Draft = 'DRAFT',
+  Rejected = 'REJECTED',
+  Submitted = 'SUBMITTED',
+  Withdrawn = 'WITHDRAWN'
+}
 
 export type CommitteeNode = Node & {
   __typename?: 'CommitteeNode';
