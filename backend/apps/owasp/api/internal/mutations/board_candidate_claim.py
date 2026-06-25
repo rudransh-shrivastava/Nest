@@ -2,6 +2,7 @@
 
 import logging
 
+import pydantic
 import strawberry
 from django.core.exceptions import ValidationError
 from django.db import transaction
@@ -21,13 +22,27 @@ CLAIM_NOT_FOUND_MSG = "Claim not found."
 GENERIC_ERROR_MSG = "Something went wrong."
 
 
-@strawberry.input
+class CreateClaimPydanticInput(pydantic.BaseModel):
+    """Pydantic Model for creating a claim."""
+
+    description: str = pydantic.Field(min_length=10, max_length=100)
+    name: str = pydantic.Field(min_length=5, max_length=50)
+    year: int
+
+    @pydantic.field_validator("year")
+    @classmethod
+    def validate_year_not_future(cls, value: int) -> int:
+        """Validate year."""
+        max_val = 2027
+        if value > max_val:
+            msg = "example error"
+            raise ValueError(msg)
+        return value
+
+
+@strawberry.experimental.pydantic.input(model=CreateClaimPydanticInput, all_fields=True)
 class CreateClaimInput:
     """Input for creating a claim."""
-
-    description: str
-    name: str
-    year: int
 
 
 @strawberry.input
@@ -141,10 +156,9 @@ class BoardCandidateClaimMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     @transaction.atomic
-    def create_board_candidate_claim(
-        self, info: Info, input_data: CreateClaimInput
-    ) -> ClaimResult:
+    def create_board_candidate_claim(self, info: Info, data: CreateClaimInput) -> ClaimResult:
         """Create a new draft claim for a candidate."""
+        input_data = data.to_pydantic()
         user = info.context.request.user
         if user.github_user is None:
             return ClaimResult(ok=False, code="FORBIDDEN", message=ACCESS_DENIED_MSG)
